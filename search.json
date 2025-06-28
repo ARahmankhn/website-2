@@ -1,9 +1,16 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Billboard Graphics",
+    "section": "",
+    "text": "My name is Abdul Rahman, and I graduated from University of Engineerign and Technology Lahore, Pakistan."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "My name is Abdul Rahman, and I graduated from University of Engineerign and Technology Lahore, Pakistan.\nKane’s Free Data Science Bootcamp"
   }
 ]
