@@ -1,0 +1,6 @@
+---
+title: "About"
+---
+My name is **Abdul Rahman**, and I graduated from *University of Engineerign and Technology Lahore*, Pakistan.
+
+[Kane’s Free Data Science Bootcamp](https://bootcamp.davidkane.info)

@@ -1,0 +1,82 @@
+---
+title: "Billboard Graphics"
+author: "Abdul Rahman"
+execute:
+  echo: false
+---
+```{r}
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(tutorial.helpers)
+  library(plotly)
+})
+
+```
+
+```{r}
+# Load the billboard dataset
+billboard <- tidyr::billboard
+
+# Convert the data from wide to long format for plotting
+billboard_long <- billboard %>%
+  pivot_longer(cols = starts_with("wk"), names_to = "week", values_to = "rank") %>%
+  filter(!is.na(rank)) %>%
+  mutate(week = as.numeric(str_remove(week, "wk")))
+
+# Identify top 5 most frequently appearing artists
+top_artists <- billboard_long %>%
+  count(artist) %>%
+  slice_max(n, n = 5) %>%
+  pull(artist)
+
+# Filter for top artists and tracks that reached Top 20
+filtered_data <- billboard_long %>%
+  filter(artist %in% top_artists, rank <= 20)
+
+# Identify peak label positions for tracks
+peak_labels <- filtered_data %>%
+  group_by(track) %>%
+  slice_min(rank, n = 1) %>%
+  ungroup()
+
+# Create refined plot
+p <- filtered_data %>%
+  ggplot(aes(x = week, y = rank, color = artist,
+             group = track,
+             text = paste0(
+               "🎤 Artist: ", artist, "<br>",
+               "🎶 Track: ", track, "<br>",
+               "📅 Week: ", week, "<br>",
+               "📈 Rank: ", rank))) +
+  geom_line(alpha = 0.9, linewidth = 1.1) +
+  geom_point(data = peak_labels, aes(x = week, y = rank), size = 2, color = "black") +
+  scale_y_reverse(breaks = seq(1, 20, by = 2)) +
+  facet_wrap(~ artist, scales = "free_y") +
+  labs(
+    title = "🎵 Billboard Hot 100 — Top Tracks from 5 Popular Artists",
+    subtitle = "Showing performance of tracks that peaked within Top 20",
+    x = "Weeks on Chart",
+    y = "Billboard Rank (1 = Top)",
+    color = "Artist"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold", size = 20),
+    plot.subtitle = element_text(size = 14),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    strip.text = element_text(size = 14, face = "bold")
+  )
+
+# Convert to interactive plot
+interactive_plot <- ggplotly(p, tooltip = "text")
+interactive_plot
+
+# Save static version
+ggsave("billboard_top_artists_plot.png", p, width = 12, height = 6)
+
+
+```
+
